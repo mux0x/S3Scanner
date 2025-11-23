@@ -1,4 +1,4 @@
-module github.com/sa7mon/s3scanner
+module github.com/mux0x/s3scanner
 
 go 1.24.0
 
