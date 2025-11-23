@@ -212,11 +212,12 @@ func Run(version string) {
 				os.Exit(1)
 			}
 		} else if args.BucketName != "" {
-			if !bucket.IsValidS3BucketName(args.BucketName) {
+			normalizedName, normalizeErr := bucket.NormalizeName(args.BucketName)
+			if normalizeErr != nil {
 				log.Info(fmt.Sprintf("invalid   | %s", args.BucketName))
 				os.Exit(0)
 			}
-			c := bucket.NewBucket(strings.ToLower(args.BucketName))
+			c := bucket.NewBucket(normalizedName)
 			buckets <- c
 			close(buckets)
 		} else if isPipedInput() {
@@ -226,11 +227,12 @@ func Run(version string) {
 				if line == "" {
 					continue
 				}
-				if !bucket.IsValidS3BucketName(line) {
+				normalizedName, normalizeErr := bucket.NormalizeName(line)
+				if normalizeErr != nil {
 					log.Infof("invalid   | %s", line)
 					continue
 				}
-				buckets <- bucket.NewBucket(strings.ToLower(line))
+				buckets <- bucket.NewBucket(normalizedName)
 			}
 			if err := scanner.Err(); err != nil {
 				log.Errorf("error reading stdin: %v", err)

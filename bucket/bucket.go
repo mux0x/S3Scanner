@@ -147,17 +147,18 @@ func FromReader(r io.Reader, bucketChan chan Bucket) error {
 	scanner := bufio.NewScanner(r)
 	bucketsSeen := make(map[string]struct{})
 	for scanner.Scan() {
-		bucketName := strings.TrimSpace(scanner.Text())
-		if !IsValidS3BucketName(bucketName) {
-			log.Info(fmt.Sprintf("invalid   | %s", bucketName))
+		raw := strings.TrimSpace(scanner.Text())
+		normalized, err := NormalizeName(raw)
+		if err != nil {
+			log.Info(fmt.Sprintf("invalid   | %s", raw))
 			continue
 		}
-		bucketName = strings.ToLower(bucketName)
-		if _, seen := bucketsSeen[bucketName]; seen {
+
+		if _, seen := bucketsSeen[normalized]; seen {
 			continue
 		}
-		bucketsSeen[bucketName] = struct{}{}
-		bucketChan <- NewBucket(bucketName)
+		bucketsSeen[normalized] = struct{}{}
+		bucketChan <- NewBucket(normalized)
 	}
 
 	if ferr := scanner.Err(); ferr != nil {
