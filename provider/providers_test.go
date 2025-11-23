@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/sa7mon/s3scanner/bucket"
+	"github.com/mux0x/S3Scanner/bucket"
 	"github.com/stretchr/testify/assert"
 )
 

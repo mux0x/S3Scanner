@@ -29,7 +29,7 @@ func PrintResult(b *bucket.Bucket, json bool) {
 }
 
 func Work(wg *sync.WaitGroup, buckets chan bucket.Bucket, provider provider.StorageProvider, doEnumerate bool,
-	writeToDB bool, json bool) {
+	doDestructive bool, writeToDB bool, json bool) {
 	defer wg.Done()
 	for b1 := range buckets {
 		b, existsErr := provider.BucketExists(&b1)
@@ -44,7 +44,7 @@ func Work(wg *sync.WaitGroup, buckets chan bucket.Bucket, provider provider.Stor
 		}
 
 		// Scan permissions
-		scanErr := provider.Scan(b, false)
+		scanErr := provider.Scan(b, doDestructive)
 		if scanErr != nil {
 			log.WithFields(log.Fields{"bucket": b}).Error(scanErr)
 		}

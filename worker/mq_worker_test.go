@@ -51,5 +51,5 @@ func TestMqWork(t *testing.T) {
 	publishBucket(ch, bucket.Bucket{Name: "mqtest"})
 
 	WorkMQ(0, &wg, conn, aws, "test", 1,
-		false, false)
+		false, false, false)
 }

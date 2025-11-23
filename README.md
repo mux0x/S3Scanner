@@ -55,6 +55,7 @@ OUTPUT:
 
 OPTIONS:
   -enumerate           Enumerate bucket objects (can be time-consuming). Default: "false"
+  -destructive         Attempt write and ACL update checks (creates and deletes temp objects). Default: "false"
   -provider    string  Object storage provider: aws, custom, digitalocean, dreamhost, gcp, linode, scaleway - custom requires config file. Default: "aws"
   -threads     int     Number of threads to scan with. Default: "4"
 

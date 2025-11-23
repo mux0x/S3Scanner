@@ -1,4 +1,4 @@
-module github.com/mux0x/s3scanner
+module github.com/mux0x/S3Scanner
 
 go 1.24.0
 
@@ -12,8 +12,6 @@ require (
 	github.com/aws/smithy-go v1.23.2
 	github.com/dustin/go-humanize v1.0.1
 	github.com/imroc/req/v3 v3.55.0
-	github.com/mux0x/S3Scanner v0.1.0
-	github.com/sa7mon/s3scanner v0.0.0-20251106040855-9e26bc46e8ee
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.21.0
 	github.com/streadway/amqp v1.1.0

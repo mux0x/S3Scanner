@@ -95,6 +95,7 @@ var flagSettings = map[string]flagSetting{
 	"bucket-file": {category: CategoryInput},
 	"mq":          {category: CategoryInput},
 	"threads":     {category: CategoryOptions},
+	"destructive": {category: CategoryOptions},
 	"verbose":     {category: CategoryDebug},
 	"version":     {category: CategoryDebug},
 	"db":          {category: CategoryOutput},
@@ -123,6 +124,7 @@ func Run(version string) {
 	flag.BoolVar(&args.JSON, "json", false, "Print logs to stdout in JSON format instead of human-readable.")
 
 	flag.BoolVar(&args.DoEnumerate, "enumerate", false, "Enumerate bucket objects (can be time-consuming).")
+	flag.BoolVar(&args.DoDestructive, "destructive", false, "Attempt write and ACL update checks (creates and deletes temp objects).")
 	flag.IntVar(&args.Threads, "threads", 4, "Number of threads to scan with.")
 	flag.BoolVar(&args.Verbose, "verbose", false, "Enable verbose logging.")
 	flag.BoolVar(&args.Version, "version", false, "Print version")
@@ -199,7 +201,7 @@ func Run(version string) {
 
 		for i := 0; i < args.Threads; i++ {
 			wg.Add(1)
-			go worker.Work(&wg, buckets, p, args.DoEnumerate, args.WriteToDB, args.JSON)
+			go worker.Work(&wg, buckets, p, args.DoEnumerate, args.DoDestructive, args.WriteToDB, args.JSON)
 		}
 
 		if args.BucketFile != "" {
@@ -251,7 +253,7 @@ func Run(version string) {
 
 	for i := 0; i < args.Threads; i++ {
 		wg.Add(1)
-		go worker.WorkMQ(i, &wg, conn, p, mqName, args.Threads, args.DoEnumerate, args.WriteToDB)
+		go worker.WorkMQ(i, &wg, conn, p, mqName, args.Threads, args.DoEnumerate, args.DoDestructive, args.WriteToDB)
 	}
 	log.Printf("Waiting for messages. To exit press CTRL+C")
 	wg.Wait()

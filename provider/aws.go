@@ -8,14 +8,13 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
-	"github.com/sa7mon/s3scanner/permission"
-
 	awshttp "github.com/aws/aws-sdk-go-v2/aws/transport/http"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/mux0x/S3Scanner/bucket"
+	"github.com/mux0x/S3Scanner/permission"
 	"github.com/mux0x/S3Scanner/provider/clientmap"
 	log "github.com/sirupsen/logrus"
 )
@@ -212,26 +211,20 @@ func checkPermissionsWithAuth(anonClient *s3.Client, authClient *s3.Client, b *b
 
 	b.DateScanned = time.Now()
 
-	// Check for anon READ_ACP permission. If allowed, exit
+	// Check for anon READ_ACP permission.
 	anonReadACL, err := permission.CheckPermReadACL(anonClient, b)
 	if err != nil {
 		return fmt.Errorf("error occurred while checking for anon ReadACL: %v", err.Error())
 	}
 	b.PermAllUsersReadACL = bucket.Permission(anonReadACL)
-	if b.PermAllUsersReadACL == bucket.PermissionAllowed {
-		return nil
-	}
 
-	// Check for auth READ_ACP permission. If allowed, exit
+	// Check for auth READ_ACP permission.
 	if authClient != nil {
 		authReadACL, authACLErr := permission.CheckPermReadACL(authClient, b)
 		if authACLErr != nil {
 			return fmt.Errorf("error occurred while checking for auth ReadACL: %v", authACLErr.Error())
 		}
 		b.PermAuthUsersReadACL = bucket.Permission(authReadACL)
-		if b.PermAuthUsersReadACL == bucket.PermissionAllowed {
-			return nil
-		}
 	}
 
 	// Check for anon READ

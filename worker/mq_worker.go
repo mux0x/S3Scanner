@@ -20,7 +20,7 @@ func FailOnError(err error, msg string) {
 }
 
 func WorkMQ(threadID int, wg *sync.WaitGroup, conn *amqp.Connection, provider provider.StorageProvider, queue string,
-	threads int, doEnumerate bool, writeToDB bool) {
+	threads int, doEnumerate bool, doDestructive bool, writeToDB bool) {
 	_, once := os.LookupEnv("TEST_MQ") // If we're being tested, exit after one bucket is scanned
 	defer wg.Done()
 
@@ -63,7 +63,7 @@ func WorkMQ(threadID int, wg *sync.WaitGroup, conn *amqp.Connection, provider pr
 				continue
 			}
 
-			scanErr := provider.Scan(b, false)
+			scanErr := provider.Scan(b, doDestructive)
 			if scanErr != nil {
 				log.WithFields(log.Fields{"bucket": b}).Error(scanErr)
 				FailOnError(j.Reject(false), "failed to reject")

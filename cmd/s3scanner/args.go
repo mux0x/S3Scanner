@@ -10,17 +10,18 @@ import (
 )
 
 type ArgCollection struct {
-	BucketFile   string
-	BucketName   string
-	DoEnumerate  bool
-	JSON         bool
-	ProviderFlag string
-	Threads      int
-	UseMq        bool
-	Verbose      bool
-	Version      bool
-	WriteToDB    bool
-	StdinInput   bool
+	BucketFile    string
+	BucketName    string
+	DoEnumerate   bool
+	DoDestructive bool
+	JSON          bool
+	ProviderFlag  string
+	Threads       int
+	UseMq         bool
+	Verbose       bool
+	Version       bool
+	WriteToDB     bool
+	StdinInput    bool
 }
 
 func isPipedInput() bool {
